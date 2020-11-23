@@ -1,15 +1,13 @@
 import React from 'react';
+import GlobalStyle from './styles/global';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
 
-function App(): JSX.Element {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </header>
-    </div>
-  );
-}
+const App: React.FC = () => (
+  <>
+    <SignUp />
+    <GlobalStyle />
+  </>
+);
 
 export default App;
