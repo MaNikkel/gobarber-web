@@ -3,7 +3,8 @@ import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
-import { useAuth } from '../../hooks/AuthContext';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 import { Container, Background, Content } from './styles';
 import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input';
@@ -17,6 +18,7 @@ interface SignInFormData {
 
 const SignIn: React.FC = () => {
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const formRef = useRef<FormHandles>(null);
 
@@ -31,13 +33,16 @@ const SignIn: React.FC = () => {
           password: Yup.string().required('Senha obrigatória'),
         });
         await schema.validate(data, { abortEarly: false });
-        signIn({ email: data.email, password: data.password });
+        await signIn({ email: data.email, password: data.password });
       } catch (err) {
-        const errors = getValidationErrors(err);
-        formRef.current?.setErrors(errors);
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+        }
+        addToast();
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
